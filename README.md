@@ -1,3 +1,7 @@
+<p>
+    <img src="MainPage.png" width="1620" alt="screenshot">
+</p>
+
 # Web application for remote banking
 
 This course project is dedicated to creating a software application to optimize the activities of a banking enterprise.
@@ -7,8 +11,6 @@ necessary information, as well as execute various queries.
 ## Quickstart: Initialize Docker
 
 1. Clone this repository:
-
-git clone https://github.com/VladBlnO0/WEBank
 
 2. Run Docker Compose:
 
