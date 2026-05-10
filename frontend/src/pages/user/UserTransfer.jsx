@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button, Toast, ToastContainer} from 'react-bootstrap';
 
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:4000";
+const API_BASE_URL = "http://localhost:4000";
 
 export default function UserTransfer() {
 

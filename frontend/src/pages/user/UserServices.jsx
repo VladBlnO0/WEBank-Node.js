@@ -5,7 +5,7 @@ import styles from "../css/User.module.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal, Toast, ToastContainer } from 'react-bootstrap'
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:4000";
+const API_BASE_URL = "http://localhost:4000";
 
 export default function PaymentPage() {
 

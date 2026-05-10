@@ -1,44 +1,4 @@
 services:
-  frontend:
-    build: ./frontend
-    container_name: web_frontend
-    ports:
-      - '3000:3000'
-
-#    Live Reload
-#    volumes:
-#      - ./frontend:/app
-#      - /app/node_modules
-
-    stdin_open: true
-    tty: true
-    environment:
-      - CHOKIDAR_USEPOLLING=true
-      - REACT_APP_API_URL=http://localhost:4000
-      - NODE_OPTIONS=--openssl-legacy-provider
-    depends_on:
-      - backend
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: web_backend
-    ports:
-      - '4000:4000'
-
-#    Live Reload
-#    volumes:
-#      - ./backend:/app
-#      - /app/node_modules
-
-    environment:
-      - MYSQL_HOST=db
-      - MYSQL_USER=root
-      - MYSQL_PASSWORD=rootpassword
-      - MYSQL_DATABASE=bankdb
-    depends_on:
-      db:
-        condition: service_healthy
   db:
     image: mysql:8.3
     container_name: mysql_db
@@ -46,7 +6,7 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: bankdb
     ports:
-      - '3306:3306'
+      - "3306:3306"
     volumes:
       - ./mysql_data:/var/lib/mysql
       - ./db-dumps:/docker-entrypoint-initdb.d/
@@ -55,3 +15,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+  adminer:
+    image: "adminer:latest"
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
