@@ -22,7 +22,7 @@ export default function UserDashboard() {
   const [users, setUsers] = useState([]);
   const [transactions, setTransactions] = useState([]);
 
-  const mainCard = users[0];
+  const mainCard = users[1];
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/user/balance?number=1`)
