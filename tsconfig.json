@@ -1,7 +1,13 @@
 {
-  "files": [],
-  "references": [
-    { "path": "./tsconfig.app.json" },
-    { "path": "./tsconfig.node.json" }
-  ]
+  "compilerOptions": {
+    "jsx": "react-jsx",
+
+    "paths": {
+      "@frontend/*": ["./frontend/*"],
+      "@backend/*": ["./backend/*"]
+    },
+    "plugins": [{ "name": "typescript-plugin-css-modules" }]
+  },
+  "include": ["frontend/**/*.ts", "backend/**/*.ts"],
+  "exclude": ["node_modules"]
 }

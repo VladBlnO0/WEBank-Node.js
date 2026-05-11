@@ -1,6 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const db = require("../../db");
+import { Router } from 'express';
+const router = Router();
+import { query } from "../../db";
 
 router.get("/paymentsGet", async (req, res) => {
 
@@ -16,7 +16,7 @@ router.get("/paymentsGet", async (req, res) => {
     `;
 
     try {
-        db.query(paymentsDueDataSql, (err2, paymentsDueData) => {
+        query(paymentsDueDataSql, (err2, paymentsDueData) => {
             if (err2) return res.status(500).json({ message: "Service data error" });
             res.json({
                 paymentsDueData
@@ -27,4 +27,4 @@ router.get("/paymentsGet", async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

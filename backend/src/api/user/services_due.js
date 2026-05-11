@@ -1,9 +1,9 @@
-const cron = require("node-cron");
-const db = require("../../db");
+import { schedule } from "node-cron";
+import { query } from "../../db";
 
-cron.schedule("0 0 * * *", async () => {
+schedule("0 0 * * *", async () => {
     try {
-        const accounts = await db.query(
+        const accounts = await query(
             `SELECT p.account_id, p.service_id, s.tariff FROM payments p JOIN services s ON p.service_id = s.id
              WHERE p.due_date = CURDATE() AND p.status = true`,
         );
@@ -11,7 +11,7 @@ cron.schedule("0 0 * * *", async () => {
         for (const row of accounts) {
             let nextDue = new Date();
             nextDue.setMonth(nextDue.getMonth() + 1);
-            await db.query(
+            await query(
                 `INSERT INTO payments (account_id, service_id, due_date, amount_due)
                  VALUES (?, ?, ?, ?)`,
                 [

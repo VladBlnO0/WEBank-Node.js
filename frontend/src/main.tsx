@@ -12,9 +12,9 @@ import "./index.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
-import User from "./pages/user/User";
-import UserTransfer from "./pages/user/UserTransfer";
-import UserServices from "./pages/user/UserServices";
+import User from "./ts/user";
+import UserTransfer from "./ts/userTransfer";
+import UserServices from "./ts/userServices";
 
 // const router = createBrowserRouter([
 //   {
@@ -34,10 +34,10 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <BrowserRouter>
       {/* Navigation */}
-      {/* <nav>
-        <Link to="/">Home</Link> | <Link to="/about">About</Link> |{" "}
-        <Link to="/contact">Contact</Link>
-      </nav> */}
+      <nav>
+        <Link to="http://localhost:3000/services">Home</Link> |{" "}
+        <Link to="/about">About</Link> | <Link to="/contact">Contact</Link>
+      </nav>
 
       {/* Routes */}
       <Routes>

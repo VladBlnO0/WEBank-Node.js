@@ -1,6 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../../db');
+import { Router } from 'express';
+const router = Router();
+import { query } from '../../db';
 
 router.post('/sending', async (req, res) => {
     const { card, amount, description, senderAccountNumber } = req.body;
@@ -10,7 +10,7 @@ router.post('/sending', async (req, res) => {
     }
 
     try {
-        db.query(
+        query(
             'SELECT id FROM user.accounts WHERE number = ?', [card],
             (err, receiverResults) => {
                 if (err || receiverResults.length === 0) {
@@ -19,7 +19,7 @@ router.post('/sending', async (req, res) => {
 
                 const receiverId = receiverResults[0].id;
 
-                db.query(
+                query(
                     'SELECT id FROM user.accounts WHERE number = ?', [senderAccountNumber],
                     (err2, senderResults) => {
                         if (err2 || senderResults.length === 0) {
@@ -28,7 +28,7 @@ router.post('/sending', async (req, res) => {
 
                         const senderId = senderResults[0].id;
 
-                        db.query(
+                        query(
                             'INSERT INTO finance.transactions (sender_id, receiver_id, amount, description) VALUES (?, ?, ?, ?)',
                             [senderId, receiverId, amount, description || ''],
                             (err3) => {
@@ -37,7 +37,7 @@ router.post('/sending', async (req, res) => {
                                     return res.status(500).json({ message: 'Transaction failed' });
                                 }
 
-                                db.query(
+                                query(
                                     'UPDATE user.accounts SET balance = balance - ? WHERE id = ?',
                                     [amount, senderId],
                                     (err4) => {
@@ -45,7 +45,7 @@ router.post('/sending', async (req, res) => {
                                             console.error('Sender balance update error:', err4);
                                             return res.status(500).json({ message: 'Failed to update sender balance' });
                                         }
-                                        db.query(
+                                        query(
                                             'UPDATE user.accounts SET balance = balance + ? WHERE id = ?',
                                             [amount, receiverId],
                                             (err5) => {
@@ -71,4 +71,4 @@ router.post('/sending', async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

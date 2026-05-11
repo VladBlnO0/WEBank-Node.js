@@ -1,0 +1,203 @@
+@import url("./palette.css");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: "Poppins", sans-serif;
+  background: #f4f6f9;
+}
+.dashboard {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+.sidebar {
+  width: 240px;
+  background-color: var(--color-dashboard-background);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: #1eae41;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+.nav {
+  flex-grow: 1;
+}
+.nav-item {
+  display: block;
+  color: var(--color-text);
+  text-decoration: none;
+  padding: 10px 0;
+  border-bottom: 1px solid #000000;
+  transition: color 0.3s;
+}
+.nav-item:hover,
+.nav-item.active {
+  color: var(--color-black);
+}
+.main-content {
+  flex-grow: 1;
+}
+h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #1a1a1a;
+}
+.content {
+  overflow-y: auto;
+
+  text-align: center;
+  gap: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 50px;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-white);
+  box-sizing: border-box;
+  flex: 1;
+}
+.container {
+  background-color: var(--color-container-background);
+  padding: 20px;
+  width: 100%;
+
+  border-radius: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(100px);
+  flex: 1;
+}
+.exit {
+  text-align: center;
+  font-weight: bold;
+  color: var(--color-black);
+  text-decoration: none;
+  padding: 10px 0;
+  border-top: 1px solid #ccc;
+  transition: color 0.3s;
+  margin: 20px;
+}
+
+.table {
+  table-layout: fixed;
+
+  width: 150vh;
+  border-collapse: collapse;
+  font-size: 16px;
+}
+.balance-section {
+  background: #f4f6f9;
+  color: #000;
+  padding: 10px;
+  border-radius: 2px;
+}
+
+.balance {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 3px;
+}
+
+.table th,
+.table td {
+  border: 1px solid #333;
+  padding: 8px 12px;
+}
+
+.table th {
+  background: var(--color-container-admin-background);
+}
+
+.btn {
+  width: 100%;
+
+  padding: 12px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-white);
+  background: var(--color-button);
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: 0.3s ease;
+}
+.btn:hover {
+  background: var(--color-button-hoover);
+  cursor: pointer;
+}
+
+.transfer_form {
+  width: 100%;
+  height: 5%;
+  margin: 0;
+  resize: none;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 10px;
+  background: #ffffff;
+  border-radius: 5px;
+}
+
+.transfer-form label {
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.transfer-form input[type="text"],
+.transfer-form input[type="number"] {
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  outline: none;
+  transition: border 0.2s ease;
+}
+
+.transfer-form input:focus {
+  border-color: var(--color-button);
+}
+
+.currency-options {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.currency-options label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.footer {
+  padding: 12px 30px;
+
+  left: 0;
+  text-align: left;
+  font-size: 14px;
+  width: 100%;
+  height: 45px;
+  background: #ffffff;
+  color: gray;
+  bottom: 0;
+  position: fixed;
+  margin-bottom: auto;
+}
+.card_icon {
+  position: absolute;
+  top: 20px;
+  right: 10%;
+  font-size: 20px;
+  color: #666;
+}

@@ -1,6 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../../db');
+import { Router } from 'express';
+const router = Router();
+import { query } from '../../db';
 
 router.get('/transactions', (req, res) => {
     const accountNumber = req.query.number;
@@ -57,13 +57,13 @@ router.get('/transactions', (req, res) => {
     `;
 
     try {
-        db.query(sqlSend, [accountNumber], (err1, sendResults) => {
+        query(sqlSend, [accountNumber], (err1, sendResults) => {
             if (err1) return res.status(500).json({ message: 'Sent query error' });
 
-            db.query(sqlReceive, [accountNumber], (err2, receiveResults) => {
+            query(sqlReceive, [accountNumber], (err2, receiveResults) => {
                 if (err2) return res.status(500).json({ message: 'Received query error' });
 
-                db.query(sqlPayment, [accountNumber], (err3, paymentResults) => {
+                query(sqlPayment, [accountNumber], (err3, paymentResults) => {
                     if (err3) return res.status(500).json({ message: 'Payment query error' });
 
                     const send = sendResults.map(tx => ({
@@ -109,4 +109,4 @@ router.get('/transactions', (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;

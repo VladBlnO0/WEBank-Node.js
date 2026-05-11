@@ -1,6 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../../db');
+import { Router } from 'express';
+const router = Router();
+import { query } from '../../db';
 
 router.post('/paymentsPost', (req, res) => {
     const { senderAccountNumber, amount, services } = req.body;
@@ -9,7 +9,7 @@ router.post('/paymentsPost', (req, res) => {
         return res.status(400).json({ message: "Invalid request" });
     }
 
-    db.query(
+    query(
         'SELECT id, balance FROM user.accounts WHERE number = ?', [senderAccountNumber],
         (err, senderResults) => {
             if (err || senderResults.length === 0) {
@@ -24,7 +24,7 @@ router.post('/paymentsPost', (req, res) => {
 
             function processService(index) {
                 if (index >= services.length) {
-                    db.query(
+                    query(
                         'UPDATE user.accounts SET balance = balance - ? WHERE id = ?',
                         [amount, senderId],
                         (err4) => {
@@ -40,7 +40,7 @@ router.post('/paymentsPost', (req, res) => {
 
                 const { service_id } = services[index];
 
-                db.query(
+                query(
                     `UPDATE finance.payments p JOIN user.accounts a ON p.account_id = a.id
                      SET p.status = 1, p.payment_date = NOW()
                      WHERE a.number = ?
@@ -61,4 +61,4 @@ router.post('/paymentsPost', (req, res) => {
     );
 });
 
-module.exports = router;
+export default router;

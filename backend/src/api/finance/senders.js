@@ -1,6 +1,6 @@
-const express = require('express');
-const router = express.Router();
-const db = require('../../db');
+import { Router } from 'express';
+const router = Router();
+import { query } from '../../db';
 
 router.get('/senders', (req, res) => {
     const sql = `
@@ -10,7 +10,7 @@ router.get('/senders', (req, res) => {
         ORDER BY u.username;
     `;
 
-    db.query(sql, (err, results) => {
+    query(sql, (err, results) => {
         if (err) {
             console.error('DB error in /senders:', err);
             return res.status(500).json({ message: 'DB error' });
@@ -20,4 +20,4 @@ router.get('/senders', (req, res) => {
     });
 });
 
-module.exports = router;
+export default router;
