@@ -2,7 +2,21 @@
   "name": "website-dev-docker",
   "version": "1.0.0",
   "description": "This course project is dedicated to creating a software application to optimize the activities of a banking enterprise. The main task is to develop a web application with a graphical interface that interacts with a database to store, update, and process the  necessary information, as well as execute various queries.",
-  "main": "index.js",
+  "devDependencies": {
+    "@eslint-react/eslint-plugin": "^5.7.7",
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.12.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
+    "eslint": "^10.2.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.5.0",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.59.3",
+    "vite": "^8.0.10"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,7 +27,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/VladBlnO0/WebBank/issues"
   },

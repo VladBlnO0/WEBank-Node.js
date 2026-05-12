@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
-    "bootstrap": "^5.3.5",
-    "bootstrap-icons": "^1.11.3",
+    "bootstrap": "^5.3.8",
+    "bootstrap-icons": "^1.13.1",
     "lucide-react": "^0.510.0",
     "react": "^19.2.5",
     "react-bootstrap": "^2.10.9",

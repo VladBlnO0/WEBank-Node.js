@@ -6,18 +6,41 @@ import { Button, Modal, Toast, ToastContainer } from "react-bootstrap";
 
 const API_BASE_URL = "http://localhost:3000";
 
-export default function PaymentPage() {
-  const [services, setServices] = useState([]);
-  const [selected, setSelected] = useState([]);
+interface Service {
+  id: number;
+  name: string;
+  provider: string;
+  tariff: string;
+  icon: string;
+}
 
-  const [payments, setPayments] = useState([]);
+interface Payment {
+  id: number;
+  account_id: number;
+  service_id: number;
+  amount_due: string;
+  status: number;
+  due_date: string;
+}
+
+interface User {
+  id: number;
+  name: string;
+  balance: string;
+}
+
+export default function PaymentPage() {
+  const [services, setServices] = useState<Service[]>([]);
+  const [selected, setSelected] = useState<number[]>([]);
+
+  const [payments, setPayments] = useState<Payment[]>([]);
 
   const [showModal, setShowModal] = useState(false);
 
   const [showToast, setShowToast] = useState(false);
   const [ToastMsg, setToastMsg] = useState({ heading: "", content: null });
 
-  const [user, setUser] = useState([]);
+  const [user, setUser] = useState<User[]>([]);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/services`)
@@ -26,20 +49,20 @@ export default function PaymentPage() {
   }, []);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/user/paymentsGet`)
+    fetch(`${API_BASE_URL}/payments/get`)
       .then((res) => res.json())
       .then((data) => setPayments(data.paymentsDueData));
   }, []);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/user/balance?number=1`)
+    fetch(`${API_BASE_URL}/balance?number=1`)
       .then((res) => res.json())
-      .then((data) => setUser(data.userData));
+      .then((data) => setUser(data));
   }, []);
 
   const userBalance = parseFloat(user[0]?.balance ?? 0);
 
-  const toggleService = (id) => {
+  const toggleService = (id: any) => {
     setSelected((prev) =>
       prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id],
     );
@@ -50,13 +73,13 @@ export default function PaymentPage() {
     return item ? sum + parseFloat(item.tariff) : sum;
   }, 0);
 
-  const newBalance = userBalance - parseFloat(total);
+  const newBalance = userBalance - parseFloat(String(total));
 
   const handleSubmit = () => {
     if (selected.length === 0) {
       setToastMsg({
-        heading: "Помилка",
-        content: "Виберіть хоча б одну послугу для оплати.",
+        heading: "Error",
+        content: "Please select at least one service to pay for.",
       });
       setShowToast(true);
       return;
@@ -66,8 +89,8 @@ export default function PaymentPage() {
 
     if (total > userBalance) {
       setToastMsg({
-        heading: "Помилка",
-        content: "Недостатньо коштів на рахунку.",
+        heading: "Error",
+        content: "Insufficient funds in your account.",
       });
       setShowToast(true);
       return;
@@ -77,19 +100,19 @@ export default function PaymentPage() {
   };
 
   const confirmTransfer = async () => {
-    const senderCard = user[0]?.number;
+    const senderCard = "1234123412345234";
     const selectedServices = services.filter((s) => selected.includes(s.id));
 
     const payload = {
       senderAccountNumber: senderCard?.replace(/\D/g, ""),
-      amount: parseFloat(total),
+      amount: parseFloat(String(total)),
       services: selectedServices.map((service) => ({
         service_id: service.id,
       })),
     };
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/user/paymentsPost`, {
+      const response = await fetch(`${API_BASE_URL}/payments/post`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -101,6 +124,16 @@ export default function PaymentPage() {
       }
 
       setShowModal(false);
+
+      // Refresh payments data to show updated status
+      const paymentsRes = await fetch(`${API_BASE_URL}/payments/get`);
+      const paymentsData = await paymentsRes.json();
+      setPayments(paymentsData.paymentsDueData);
+
+      // Refresh balance
+      const balanceRes = await fetch(`${API_BASE_URL}/balance?number=1`);
+      const balanceData = await balanceRes.json();
+      setUser(balanceData);
 
       setToastMsg({
         heading: "Success",
@@ -209,7 +242,7 @@ export default function PaymentPage() {
               </thead>
               <tbody>
                 {services.map((service) => {
-                  const payment = payments.find(
+                  const payment: Payment | undefined = payments?.find(
                     (p) => p.service_id === service.id,
                   );
 
@@ -217,7 +250,7 @@ export default function PaymentPage() {
                   let badgeClass = "bg-secondary";
 
                   if (payment) {
-                    if (payment.status) {
+                    if (Number(payment.status) === 1) {
                       status = "Paid";
                       badgeClass = "bg-success";
                     } else {
@@ -239,7 +272,7 @@ export default function PaymentPage() {
                           type="checkbox"
                           checked={selected.includes(service.id)}
                           onChange={() => toggleService(service.id)}
-                          disabled={payment && payment.status}
+                          disabled={Number(payment?.status) === 1}
                         />
                       </td>
                       <td>

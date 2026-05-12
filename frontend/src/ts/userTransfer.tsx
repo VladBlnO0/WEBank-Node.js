@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { Modal, Button, Toast, ToastContainer } from "react-bootstrap";
 
-const API_BASE_URL = "http://localhost:4000";
+const API_BASE_URL = "http://localhost:3000";
 
 export default function UserTransfer() {
   const [card, setCard] = useState("");
@@ -23,9 +23,9 @@ export default function UserTransfer() {
   const [user, setUser] = useState([]);
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/user/balance?number=1`)
+    fetch(`${API_BASE_URL}/balance?number=1`)
       .then((res) => res.json())
-      .then((data) => setUser(data.userData));
+      .then((data) => setUser(data));
   }, []);
 
   const userBalance = parseFloat(user[0]?.balance ?? 0);

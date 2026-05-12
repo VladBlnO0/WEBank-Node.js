@@ -8,19 +8,22 @@ const router = express.Router();
 
 app.use(cors());
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 // const transRoute = require(join(__dirname, "api", "finance", "transactions"));
 // const senRoute = require(join(__dirname, "api", "finance", "senders"));
 // const recRoute = require(join(__dirname, "api", "finance", "receivers"));
 
 import balanceRoute from "./api/user/balance";
-// const transactionsRoute = require(
-//   join(__dirname, "api", "user", "transactions"),
-// );
+import transactionsRoute from "./api/finance/transactions";
+
+import userTransactionsRoute from "./api/user/transactions";
 
 // const sendingRoute = require(join(__dirname, "api", "user", "sending"));
 
 import servicesRoute from "./api/content/services";
+import paymentGetRoute from "./api/user/paymentGet";
+import paymentPostRoute from "./api/user/paymentPost";
 
 // const paymentsGetRoute = require(join(__dirname, "api", "user", "paymentsGet"));
 // const paymentsPostRoute = require(
@@ -37,16 +40,16 @@ app.get("/", (req: any, res: any) => {
 // });
 
 app.use("/balance", balanceRoute);
+app.use("/user", userTransactionsRoute);
 
-// app.use("/api/user/", transactionsRoute);
+app.use("/payments", paymentGetRoute);
+app.use("/payments", paymentPostRoute);
+
 // app.use("/api/user/", sendingRoute);
 
 // app.use("/api/finance/transactions", transRoute);
 // app.use("/api/finance/transactions", senRoute);
 // app.use("/api/finance/transactions", recRoute);
-
-// app.use("/api/user/", paymentsGetRoute);
-// app.use("/api/user/", paymentsPostRoute);
 
 app.use("/services", servicesRoute);
 

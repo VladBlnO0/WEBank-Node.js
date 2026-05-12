@@ -1,8 +1,24 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import styles from "../css/user.module.css";
 
 const API_BASE_URL = "http://localhost:3000";
+
+interface tx {
+  id: number;
+  type: string;
+  amount: number;
+  date: string;
+  label: string;
+  description?: string;
+  status?: string;
+}
+
+interface user {
+  id: number;
+  number: string;
+  balance: number;
+}
 
 export default function UserDashboard() {
   const [showCardNumberTooltip, setShowCardNumberTooltip] = useState(false);
@@ -11,22 +27,22 @@ export default function UserDashboard() {
     setShowCardNumberTooltip((prev) => !prev);
   };
 
-  const [users, setUsers] = useState([]);
-  const [transactions, setTransactions] = useState([]);
+  const [user, setUser] = useState<user[]>([]);
+  const [transactions, setTransactions] = useState<tx[]>([]);
 
-  const mainCard = users[0];
+  const mainCard = user[0];
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/balance?number=1`)
       .then((res) => res.json())
-      .then((data) => setUsers(data));
+      .then((data) => setUser(data));
   }, []);
 
-  // useEffect(() => {
-  //   fetch(`${API_BASE_URL}/api/user/transactions?number=1234123412345234`)
-  //     .then((res) => res.json())
-  //     .then((data) => setTransactions(data.transactions));
-  // }, []);
+  useEffect(() => {
+    fetch(`${API_BASE_URL}/user/1/transactions`)
+      .then((res) => res.json())
+      .then((data) => setTransactions(data.transactions));
+  }, []);
 
   const formatCard = (value: string) => {
     return value
@@ -84,14 +100,14 @@ export default function UserDashboard() {
                       {new Intl.NumberFormat("en-US", {
                         style: "currency",
                         currency: "USD",
-                      }).format(Number(users[0].balance))}
+                      }).format(Number(user[0].balance))}
                     </div>
                     <div
                       className="text-muted small position-relative"
                       onMouseEnter={handleMouse}
                       onMouseLeave={handleMouse}
                     >
-                      **** **** **** {users[0].number.slice(-4)}
+                      **** **** **** {user[0].number.slice(-4)}
                       {showCardNumberTooltip && (
                         <div
                           className="position-absolute z-1 top-100 mt-1 fs-6 bg-light border p-2 rounded shadow-sm small"
@@ -99,7 +115,7 @@ export default function UserDashboard() {
                           onMouseEnter={handleMouse}
                           onMouseLeave={handleMouse}
                         >
-                          {formatCard(users[0].number)}
+                          {formatCard(user[0].number)}
                         </div>
                       )}
                     </div>
@@ -115,53 +131,50 @@ export default function UserDashboard() {
               className="vstack gap-3 overflow-auto"
               style={{ maxHeight: "400px", paddingRight: "6px" }}
             >
-              {transactions.map((tx) => (
-                <div
-                  key={tx.id}
-                  className="d-flex justify-content-between align-items-center bg-light p-3 rounded border"
-                >
-                  <div className="w-100">
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <div className="fw-medium">
-                        {tx.label}
-                        <span
-                          className={`badge ms-2 text-uppercase ${
-                            tx.type === "Sent"
-                              ? "bg-danger"
-                              : tx.type === "Received"
-                                ? "bg-success"
-                                : "bg-primary"
-                          }`}
-                        >
-                          {tx.type}
-                        </span>
+              {transactions &&
+                transactions?.map((tx) => (
+                  <div
+                    key={tx.id}
+                    className="d-flex justify-content-between align-items-center bg-light p-3 rounded border"
+                  >
+                    <div className="w-100">
+                      <div className="d-flex justify-content-between align-items-center mb-2">
+                        <div className="fw-medium">
+                          {tx.label}
+                          <span
+                            className={`badge ms-2 text-uppercase ${
+                              tx.type === "Sent"
+                                ? "bg-danger"
+                                : tx.type === "Received"
+                                  ? "bg-success"
+                                  : "bg-primary"
+                            }`}
+                          >
+                            {tx.type}
+                          </span>
+                        </div>
+                        <div className="text-muted small">
+                          {new Date(tx.date).toLocaleDateString()}
+                        </div>
                       </div>
-                      <div className="text-muted small">
-                        {new Date(tx.date).toLocaleDateString()}
+
+                      {tx.description && (
+                        <div className="text-muted small mb-1">
+                          {tx.description}
+                        </div>
+                      )}
+
+                      <div
+                        className={`fw-bold text-end ${
+                          tx.amount < 0 ? "text-danger" : "text-success"
+                        }`}
+                      >
+                        {tx.amount > 0 ? "+" : "-"}$
+                        {Math.abs(tx.amount).toFixed(2)}
                       </div>
-                    </div>
-
-                    {tx.description && (
-                      <div className="text-muted small mb-1">
-                        {tx.description}
-                      </div>
-                    )}
-
-                    {tx.status && (
-                      <div className="text-muted small mb-2">{tx.status}</div>
-                    )}
-
-                    <div
-                      className={`fw-bold text-end ${
-                        tx.amount < 0 ? "text-danger" : "text-success"
-                      }`}
-                    >
-                      {tx.amount > 0 ? "+" : "-"}$
-                      {Math.abs(tx.amount).toFixed(2)}
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </main>

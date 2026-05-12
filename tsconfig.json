@@ -1,13 +1,19 @@
 {
+
   "compilerOptions": {
     "jsx": "react-jsx",
-
     "paths": {
       "@frontend/*": ["./frontend/*"],
       "@backend/*": ["./backend/*"]
     },
     "plugins": [{ "name": "typescript-plugin-css-modules" }]
   },
-  "include": ["frontend/**/*.ts", "backend/**/*.ts"],
+  "include": [
+    "frontend/**/*.ts",
+    "backend/**/*.ts",
+    "frontend/src/main.tsx",
+    "src/*",
+    "declarations.d.ts"
+  ],
   "exclude": ["node_modules"]
 }
