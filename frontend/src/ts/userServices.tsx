@@ -51,7 +51,7 @@ export default function PaymentPage() {
   useEffect(() => {
     fetch(`${API_BASE_URL}/payments/get`)
       .then((res) => res.json())
-      .then((data) => setPayments(data.paymentsDueData));
+      .then((data) => setPayments(data));
   }, []);
 
   useEffect(() => {
@@ -128,7 +128,7 @@ export default function PaymentPage() {
       // Refresh payments data to show updated status
       const paymentsRes = await fetch(`${API_BASE_URL}/payments/get`);
       const paymentsData = await paymentsRes.json();
-      setPayments(paymentsData.paymentsDueData);
+      setPayments(paymentsData);
 
       // Refresh balance
       const balanceRes = await fetch(`${API_BASE_URL}/balance?number=1`);
