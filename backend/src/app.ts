@@ -24,7 +24,7 @@ import userTransactionsRoute from "./api/user/transactions";
 import servicesRoute from "./api/content/services";
 import paymentGetRoute from "./api/user/paymentGet";
 import paymentPostRoute from "./api/user/paymentPost";
-
+import sendingPostRoute from "./api/user/sending";
 // const paymentsGetRoute = require(join(__dirname, "api", "user", "paymentsGet"));
 // const paymentsPostRoute = require(
 //   join(__dirname, "api", "user", "paymentsPost"),
@@ -45,7 +45,7 @@ app.use("/user", userTransactionsRoute);
 app.use("/payments", paymentGetRoute);
 app.use("/payments", paymentPostRoute);
 
-// app.use("/api/user/", sendingRoute);
+app.use("/sending", sendingPostRoute);
 
 // app.use("/api/finance/transactions", transRoute);
 // app.use("/api/finance/transactions", senRoute);

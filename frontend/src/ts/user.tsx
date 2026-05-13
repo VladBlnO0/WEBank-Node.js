@@ -126,7 +126,7 @@ export default function UserDashboard() {
             </div>
           </div>
           <div className="card p-4">
-            <h2 className="fs-5 fw-semibold mb-3">Transactions</h2>
+            <h2 className="fs-5 fw-semibold mb-3 text-body">Transactions</h2>
             <div
               className="vstack gap-3 overflow-auto"
               style={{ maxHeight: "400px", paddingRight: "6px" }}
@@ -159,7 +159,7 @@ export default function UserDashboard() {
                       </div>
 
                       {tx.description && (
-                        <div className="text-muted small mb-1">
+                        <div className="text-muted small mb-1 text-md-start">
                           {tx.description}
                         </div>
                       )}

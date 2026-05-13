@@ -101,7 +101,7 @@ export default function UserTransfer() {
   };
 
   const confirmTransfer = async () => {
-    const senderCard = user[0]?.number;
+    const senderCard = "1234123412345234";
     const payload = {
       card: card.replace(/\D/g, ""),
       senderAccountNumber: senderCard?.replace(/\D/g, ""),
@@ -110,7 +110,7 @@ export default function UserTransfer() {
     };
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/user/sending`, {
+      const response = await fetch(`${API_BASE_URL}/sending/post`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -126,7 +126,7 @@ export default function UserTransfer() {
       setShowModal(false);
 
       setToastMsg({
-        heading: "Transfer Confirmed",
+        heading: "Success",
         content: "Funds sent successfully!",
       });
       setShowToast(true);
