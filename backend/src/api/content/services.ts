@@ -1,11 +1,12 @@
 import express from "express";
 
-const pool = require("../../db");
+import db from "../../db";
+
 const servicesRoute = express.Router();
 
 servicesRoute.get("/", async (req, res) => {
   try {
-    const [rows] = await pool.query("SELECT * FROM db.services");
+    const [rows] = await db.all("SELECT * FROM services");
     res.json(rows);
   } catch (err) {
     console.error(err);

@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 
-const pool = require("./db");
 const app = express();
 const port = 3000;
 const router = express.Router();
@@ -16,7 +15,6 @@ import servicesRoute from "./api/content/services";
 import paymentGetRoute from "./api/user/paymentGet";
 import paymentPostRoute from "./api/user/paymentPost";
 import sendingPostRoute from "./api/user/sending";
-
 
 app.use("/balance", balanceRoute);
 app.use("/user", userTransactionsRoute);

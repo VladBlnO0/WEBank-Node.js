@@ -1,11 +1,22 @@
-require("dotenv").config();
-const mysql = require("mysql2/promise");
+import sqlite3 from "sqlite3";
+import { open } from "sqlite";
 
-const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "db",
-});
+async function main() {
+  const db = await open({
+    filename: "../database.sqlite",
+    driver: sqlite3.Database,
+  });
 
-module.exports = pool;
+  try {
+    const rows = await db.all("SELECT * FROM users WHERE status = ?", [
+      "active",
+    ]);
+    console.log(rows);
+  } catch (error) {
+    console.error("Database query failed:", error);
+  } finally {
+    await db.close();
+  }
+}
+
+main();
