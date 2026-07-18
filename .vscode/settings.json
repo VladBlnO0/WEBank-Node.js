@@ -4,9 +4,9 @@
     {
       "previewLimit": 50,
       "driver": "SQLite",
-      "database": "./backend/database.sqlite",
+      "database": "./database.sqlite",
       "name": "finance",
-      "group": "money"
+      "group": "finance"
     }
   ]
 }
