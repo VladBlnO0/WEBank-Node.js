@@ -1,22 +1,25 @@
 import sqlite3 from "sqlite3";
-import { open } from "sqlite";
+import { open, type Database } from "sqlite";
 
-async function main() {
-  const db = await open({
-    filename: "../database.sqlite",
-    driver: sqlite3.Database,
-  });
+let dbInstance: Database<sqlite3.Database, sqlite3.Statement> | null = null;
 
-  try {
-    const rows = await db.all("SELECT * FROM users WHERE status = ?", [
-      "active",
-    ]);
-    console.log(rows);
-  } catch (error) {
-    console.error("Database query failed:", error);
-  } finally {
-    await db.close();
+async function initDB(): Promise<
+  Database<sqlite3.Database, sqlite3.Statement>
+> {
+  if (!dbInstance) {
+    dbInstance = await open({
+      filename: "../database.sqlite",
+      driver: sqlite3.Database,
+    });
   }
+  return dbInstance;
 }
 
-main();
+function getDB(): Database<sqlite3.Database, sqlite3.Statement> {
+  if (!dbInstance) {
+    throw new Error("Database not initialized. Call initDB() first.");
+  }
+  return dbInstance;
+}
+
+export { initDB, getDB };

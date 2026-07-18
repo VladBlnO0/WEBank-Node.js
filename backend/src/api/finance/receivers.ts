@@ -1,6 +1,6 @@
 import express from "express";
 
-import db from "../../db";
+import { getDB } from "../../db";
 const receiversRoute = express.Router();
 
 receiversRoute.get("/receivers", async (req, res) => {
@@ -12,7 +12,8 @@ receiversRoute.get("/receivers", async (req, res) => {
     `;
 
   try {
-    const [rows] = await db.query(sql, [req.query.number]);
+    const db = getDB();
+    const [rows] = await db.all(sql, [req.query.number]);
     res.json(rows);
   } catch (err) {
     console.error(err);

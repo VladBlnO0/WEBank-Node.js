@@ -1,15 +1,15 @@
 import { schedule } from "node-cron";
 
-const pool = require("../../db");
+import { getDB } from "../../db";
 
 schedule("0 0 * * *", async () => {
-  const connection = await pool.getConnection();
+  const db = getDB();
   try {
-    const accounts = await connection.query(
+    const accounts = await db.all(
       `
         SELECT p.account_id, p.service_id, s.tariff
-        FROM db.payments p
-                    JOIN db.services s ON p.service_id = s.id
+        FROM payments p
+                    JOIN services s ON p.service_id = s.id
         WHERE p.due_date = CURDATE()
             AND p.status = true
     `,
@@ -18,9 +18,9 @@ schedule("0 0 * * *", async () => {
     for (const row of accounts) {
       const nextDue = new Date();
       nextDue.setMonth(nextDue.getMonth() + 1);
-      await connection.query(
+      await db.run(
         `
-            INSERT INTO db.payments (account_id, service_id, due_date, amount_due)
+            INSERT INTO payments (account_id, service_id, due_date, amount_due)
             VALUES (?, ?, ?, ?)
         `,
         [
@@ -33,7 +33,5 @@ schedule("0 0 * * *", async () => {
     }
   } catch (err) {
     console.error("Cron job failed:", err);
-  } finally {
-    connection.release();
   }
 });

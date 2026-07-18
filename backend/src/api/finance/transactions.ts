@@ -1,12 +1,15 @@
 import express from "express";
 
-const pool = require("../../db");
+import { getDB } from "../../db";
+
 const transactionsRoute = express.Router();
 
 transactionsRoute.get("/", async (req, res) => {
   try {
-    const [rows] = await pool.query(
-      `SELECT * FROM db.transactions WHERE sender_id = ? ORDER BY date DESC`,
+    const db = getDB();
+
+    const rows = await db.all(
+      `SELECT * FROM transactions WHERE sender_id = ? ORDER BY date DESC`,
       [req.query.sender_id],
     );
     res.json(rows);

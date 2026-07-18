@@ -1,12 +1,14 @@
 import express from "express";
 
-import db from "../../db";
+import { getDB } from "../../db";
 
 const servicesRoute = express.Router();
 
 servicesRoute.get("/", async (req, res) => {
   try {
-    const [rows] = await db.all("SELECT * FROM services");
+    const db = getDB();
+
+    const rows = await db.all("SELECT * FROM services");
     res.json(rows);
   } catch (err) {
     console.error(err);

@@ -1,6 +1,7 @@
 import express from "express";
 
-const pool = require("../../db");
+import { getDB } from "../../db";
+
 const paymentGetRoute = express.Router();
 
 paymentGetRoute.get("/get", async (req, res) => {
@@ -12,11 +13,13 @@ paymentGetRoute.get("/get", async (req, res) => {
                amount_due,
                status,
                payment_date
-        FROM db.payments
+        FROM payments
         WHERE account_id = 1
     `;
   try {
-    const [rows] = await pool.query(paymentsDueDataSql);
+    const db = getDB();
+
+    const rows = await db.all(paymentsDueDataSql);
     res.json(rows);
   } catch (err) {
     console.error(err);

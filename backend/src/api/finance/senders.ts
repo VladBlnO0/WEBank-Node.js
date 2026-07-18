@@ -1,18 +1,21 @@
 import express from "express";
 
-const pool = require("../../db");
+import { getDB } from "../../db";
+
 const sendersRoute = express.Router();
 
 sendersRoute.get("/senders", async (req, res) => {
   const sql = `
       SELECT DISTINCT t.sender_id AS id, u.username
-      FROM db.transactions t
+      FROM transactions t
                JOIN db.users u ON t.sender_id = u.id
       ORDER BY u.username;
   `;
 
   try {
-    const [rows] = await pool.query(sql, [req.query.number]);
+    const db = getDB();
+
+    const rows = await db.all(sql, [req.query.number]);
     res.json(rows);
   } catch (err) {
     console.error(err);

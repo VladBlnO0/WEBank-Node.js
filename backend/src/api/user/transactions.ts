@@ -1,6 +1,7 @@
 import express from "express";
 
-const pool = require("../../db");
+import { getDB } from "../../db";
+
 const usersTransactionsRoute = express.Router();
 
 interface Transaction {
@@ -44,9 +45,9 @@ usersTransactionsRoute.get("/:number/transactions", async (req, res) => {
                t.description,
                r.number AS receiver_number,
                'Надіслано' AS type
-        FROM db.transactions t
-                 JOIN db.accounts a ON t.sender_id = a.id
-                 JOIN db.accounts r ON t.receiver_id = r.id
+        FROM transactions t
+                 JOIN accounts a ON t.sender_id = a.id
+                 JOIN accounts r ON t.receiver_id = r.id
         WHERE a.id = ?
         ORDER BY t.date DESC
     `;
@@ -60,9 +61,9 @@ usersTransactionsRoute.get("/:number/transactions", async (req, res) => {
                t.description,
                'Отримано' AS type,
                s.number AS sender_number
-        FROM db.transactions t
-                 JOIN db.accounts a ON t.receiver_id = a.id
-                 JOIN db.accounts s ON t.sender_id = s.id
+        FROM transactions t
+                 JOIN accounts a ON t.receiver_id = a.id
+                 JOIN accounts s ON t.sender_id = s.id
         WHERE a.id = ?
         ORDER BY t.date DESC
     `;
@@ -75,17 +76,19 @@ usersTransactionsRoute.get("/:number/transactions", async (req, res) => {
                p.status,
                'Оплата' AS type,
                s.name AS service_name
-        FROM db.payments p
-                 JOIN db.accounts a ON p.account_id = a.id
-                 JOIN db.services s ON p.service_id = s.id
+        FROM payments p
+                 JOIN accounts a ON p.account_id = a.id
+                 JOIN services s ON p.service_id = s.id
         WHERE a.id = ? AND p.status = 1
         ORDER BY p.payment_date DESC
     `;
 
   try {
-    const [sendResults]: any = await pool.query(sqlSend, [accountNumber]);
-    const [receiveResults]: any = await pool.query(sqlReceive, [accountNumber]);
-    const [paymentResults]: any = await pool.query(sqlPayment, [accountNumber]);
+    const db = getDB();
+
+    const sendResults = await db.all(sqlSend, [accountNumber]);
+    const receiveResults = await db.all(sqlReceive, [accountNumber]);
+    const paymentResults = await db.all(sqlPayment, [accountNumber]);
 
     const send = sendResults.map((tx: Transaction) => ({
       id: tx.id,

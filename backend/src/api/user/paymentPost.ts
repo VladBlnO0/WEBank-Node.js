@@ -1,18 +1,14 @@
 import express from "express";
 
-const pool = require("../../db");
+import { getDB } from "../../db";
+
 const paymentPostRoute = express.Router();
 
 paymentPostRoute.post("/post", async (req, res) => {
   // const { senderAccountNumber, amount, services } = req.body;
-  let senderAccountNumber: string, amount: number, services: any[];
-  senderAccountNumber = "1234123412345234";
-  amount = 5;
-  services = [
-    {
-      service_id: 1,
-    },
-  ];
+  const senderAccountNumber = "1234123412345234";
+  const amount = 5;
+  const services = [{ service_id: 1 }];
 
   if (
     !senderAccountNumber ||
@@ -24,36 +20,36 @@ paymentPostRoute.post("/post", async (req, res) => {
     return res.status(400).json({ message: "Invalid request" });
   }
 
-  const connection = await pool.getConnection();
+  const db = getDB();
 
   try {
-    await connection.beginTransaction();
+    await db.run("BEGIN TRANSACTION");
 
-    const [senderResults]: any = await connection.query(
-      "SELECT id, balance FROM db.accounts WHERE number = ?",
+    const sender: [{ id: number; balance: string }] = await db.all(
+      "SELECT id, balance FROM accounts WHERE number = ?",
       [senderAccountNumber],
     );
 
-    if (senderResults.length === 0) {
-      await connection.rollback();
+    if (!sender) {
+      await db.run("ROLLBACK");
       return res.status(404).json({ message: "Sender account not found" });
     }
 
-    const senderId = senderResults[0].id;
-    const senderBalance = parseFloat(senderResults[0].balance);
+    const senderId = sender[0].id;
+    const senderBalance = parseFloat(sender[0].balance);
 
     if (senderBalance < amount) {
-      await connection.rollback();
+      await db.run("ROLLBACK");
       return res.status(400).json({ message: "Insufficient funds" });
     }
 
     for (const service of services) {
       const { service_id } = service;
 
-      await connection.query(
+      await db.run(
         `
-        UPDATE db.payments p
-        JOIN db.accounts a ON p.account_id = a.id
+        UPDATE payments p
+        JOIN accounts a ON p.account_id = a.id
         SET p.status       = 1,
             p.payment_date = NOW()
         WHERE a.number = ?
@@ -64,19 +60,17 @@ paymentPostRoute.post("/post", async (req, res) => {
       );
     }
 
-    await connection.query(
-      "UPDATE db.accounts SET balance = balance - ? WHERE id = ?",
-      [amount, senderId],
-    );
+    await db.run("UPDATE accounts SET balance = balance - ? WHERE id = ?", [
+      amount,
+      senderId,
+    ]);
 
-    await connection.commit();
+    await db.run("COMMIT");
     res.json({ message: "Payments successful" });
   } catch (err) {
-    await connection.rollback();
+    await db.run("ROLLBACK");
     console.error("Payment transaction error:", err);
     res.status(500).json({ message: "Failed to process payments" });
-  } finally {
-    connection.release();
   }
 });
 

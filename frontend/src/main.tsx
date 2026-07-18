@@ -7,9 +7,9 @@ import "./index.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import "bootstrap-icons/font/bootstrap-icons.css";
 
-import User from "./ts/user";
-import UserTransfer from "./ts/userTransfer";
-import UserServices from "./ts/userServices";
+import User from "./js/user";
+import UserTransfer from "./js/userTransfer";
+import UserServices from "./js/userServices";
 
 const router = createBrowserRouter([
   {
